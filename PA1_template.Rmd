@@ -1,11 +1,11 @@
 ---
-title: "Reproducible Research Peer Assessment 1"
+title: "Reproducible Research Project 1"
 author: "Andretti"
 date: "August 16, 2016"
 output: html_document
 ---
 
-##Analysis of Collected Weekly Activity Data
+###Analysis of Collected Weekly Activity Data
 
 The purpose of this project is to analyze personal activity data collected from a monitoring device using FitBit.  The device collects data at 5 minute intervals on a 24 hour period.  The project includes two months of personal activity data collected from a subject in 2012 from November through December.  
 
@@ -17,41 +17,25 @@ Three variables are included with the sample dataset.
 
 The dataset of 17,568 observations is stored in a comma-separated-value (CSV) file.  
   
-###Loading and pre-processing the data
+####Loading and pre-processing the data
 
 1. Load the data
 2. Process/transform the data into a tidy dataset
 
-```{r echo=TRUE}
-# set the working directory to where the project files are stored
- 
-# clear the environment
-rm(list=ls())
-
+```{r echo=FALSE}
 # load required libraries
 library("dplyr")
 library("lubridate")
 library("ggplot2")
-
-# load project data
-if ( !exists('dataset', envir = .GlobalEnv) ){
-    dataset <- read.csv("./data/activity.csv")
-}
+```
+```{r echo=TRUE}
+dataset <- read.csv("./data/activity.csv")
 
 # covert date variable to date format
 dataset$date <- ymd(dataset$date)
-
-# data structure
-str(dataset)
-
-# data summary
-summary(dataset)
-
-# view first five data frame rows
-head(dataset,5)
 ```
 
-###What is mean total number of steps taken per day?
+####What is mean total number of steps taken per day?
 
 (Missing values are ignored for this part of the project.)
 
@@ -60,10 +44,6 @@ head(dataset,5)
 ```{r echo=TRUE}
 # Group data by date excluding NA values
 stepsbyday <- aggregate(steps~date,data=dataset, sum)
-
-# View first few lines of the data frame
-head(stepsbyday)
-
 ```
 
 2. Histogram of the total number of steps taken per day
@@ -81,7 +61,7 @@ median_steps <- median(stepsbyday$steps, na.rm=TRUE)
 median_steps
 ```
 
-###What is the average daily activity pattern?
+####What is the average daily activity pattern?
 
 1. Time series graph of the 5-minute interval on the x-axis and the average number of steps taken, averaged across all days on the y-axis.
 
@@ -89,14 +69,10 @@ median_steps
 # Steps by interval
 interval_steps <- aggregate(steps~interval,data=dataset, mean)
 
-summary(interval_steps)
-
-head(interval_steps)
-
 plot(interval_steps$interval,interval_steps$steps,col="orangered",type="l", lwd=2,  main="Average Number of Steps per Day by Interval (NAs Excluded)", xlab="Time Interval", ylab="Average Number of Steps")
 ```
 
-###Imputing missing values
+####Imputing missing values
 
 **Note** There are a number of days/intervals where there are missing (NA) values
 
@@ -105,25 +81,14 @@ plot(interval_steps$interval,interval_steps$steps,col="orangered",type="l", lwd=
 The summary of the dataset tells us that the total number of missing values is 2304 but it can also be calculated as follows:
 
 ```{r echo=TRUE}
-summary(dataset$steps)
-
+# Total stesps with NA values
 sum(is.na(dataset$steps))
 ```
 
-2. The missing values were added by using the mean value of the total steps taken in a day.
-    a. Do these values differ from the estimates from the first part of the assignment?
-        Yes.  Imputing the missing values offsets the results.  
-        
-    b. What is the impact of imputing missing data on the estimates of the total daily number of steps?  
-        The overall distribution of the mean values is not disturbed; however, the imputed values increase the total number of steps on those days where the missing values are added. As a result the median value is shifted to make it equal to the mean value.
-    
-3. Create a new dataset as the original with the missing values filled in.
+2. Create a new dataset as the original with the missing values filled in.
 
 ```{r echo=TRUE}
 imputed_dataset <-transform(dataset, steps=ifelse(is.na(dataset$steps), interval_steps$steps[match(dataset$interval, interval_steps$interval)], dataset$steps))
-
-# View first rows of the dataset
-head(imputed_dataset)
 ```
 
 4. Make a histogram of the total number of steps taken each day.  Calculate and report the mean and median of the total number of steps taken per day.
@@ -141,7 +106,7 @@ median_imputed_steps
 hist(imputed_totals$steps,col="plum", main="Histogram of Total Steps per Day with Imputed Missing Values", xlab="Steps per Day", breaks=seq(from=0,to=25000,by=1000))
 ```
 
-###Are there differences in activity patterns between weekdays and weekends?
+####Are there differences in activity patterns between weekdays and weekends?
 
 Use the dataset with the imputed values for this part of the project.
 
@@ -155,9 +120,6 @@ day_activity <- mutate(day_activity, daytype=ifelse(weekdays(day_activity$date,a
 day_activity$daytype <- as.factor(day_activity[,"daytype"])
 
 meandayactivity <- aggregate(steps~interval+daytype,day_activity,mean)
-
-# view first few dataset rows
-head(meandayactivity)    
 ```
 
 2. Create a time series graph of the 5-minute interval (x-axis) and the average number of steps taken and averaged across all weekday days or weekend days (y-axis.)
