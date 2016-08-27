@@ -29,9 +29,10 @@ library("lubridate")
 library("ggplot2")
 ```
 ```{r echo=TRUE}
+# read data from file
 dataset <- read.csv("./data/activity.csv")
 
-# covert date variable to date format
+# convert date variable to date format
 dataset$date <- ymd(dataset$date)
 ```
 
@@ -54,12 +55,14 @@ hist(stepsbyday$steps,col="skyblue1", main="Histogram of Total Steps per Day (NA
 
 3. Calculate and report the mean and median of the total number of steps taken per day
 ```{r echo=TRUE}
-mean_steps <- mean(stepsbyday$steps, na.rm=TRUE)
+mean_steps <- format(mean(stepsbyday$steps, na.rm=TRUE), scientific = FALSE)
 mean_steps
 
 median_steps <- median(stepsbyday$steps, na.rm=TRUE)
 median_steps
 ```
+The mean of the total number of steps taken per day: **`r mean_steps`**.  
+The median of the total number of steps taken per day: **`r median_steps`**.
 
 ####What is the average daily activity pattern?
 
@@ -82,8 +85,9 @@ The summary of the dataset tells us that the total number of missing values is 2
 
 ```{r echo=TRUE}
 # Total stesps with NA values
-sum(is.na(dataset$steps))
+missing <- sum(is.na(dataset$steps))
 ```
+Total number of missing (NA values) is **`r missing`**.
 
 2. Create a new dataset as the original with the missing values filled in.
 
@@ -97,14 +101,16 @@ imputed_dataset <-transform(dataset, steps=ifelse(is.na(dataset$steps), interval
 # Total number of steps with imputed values
 imputed_totals <- aggregate(steps~date,data=imputed_dataset,sum)
 
-mean_imputed_steps <- mean(imputed_totals$steps, na.rm=TRUE)
+mean_imputed_steps <- format(mean(imputed_totals$steps, na.rm=TRUE), scientific = FALSE)
 mean_imputed_steps
 
-median_imputed_steps <- median(imputed_totals$steps, na.rm=TRUE)
+median_imputed_steps <- format(median(imputed_totals$steps, na.rm=TRUE),scientific = FALSE)
 median_imputed_steps
 
 hist(imputed_totals$steps,col="plum", main="Histogram of Total Steps per Day with Imputed Missing Values", xlab="Steps per Day", breaks=seq(from=0,to=25000,by=1000))
 ```
+The mean of total number of steps taken per day with imputed values is **`r mean_imputed_steps`**.  
+The median of total number of steps taken per day with imputed values is **`r median_imputed_steps`**.
 
 ####Are there differences in activity patterns between weekdays and weekends?
 
