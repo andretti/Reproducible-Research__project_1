@@ -142,6 +142,7 @@ Total number of missing (NA values) is **2304**.
 
     ## [1] "10766.19"
 
+    eval=TRUE
     hist(imputed_totals$steps,col="plum", main="Histogram of Total Steps per Day with Imputed Missing Values", xlab="Steps per Day", breaks=seq(from=0,to=25000,by=1000))
 
 ![](PA1_template_files/figure-markdown_strict/unnamed-chunk-9-1.png) The

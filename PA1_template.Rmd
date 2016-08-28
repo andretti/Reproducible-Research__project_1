@@ -2,7 +2,7 @@
 title: "Reproducible Research Project 1"
 author: "Andretti"
 date: "27-AUG-2016"
-output: html_document
+output: md_document
 ---
 
 ###Analysis of Collected Weekly Activity Data
@@ -49,7 +49,7 @@ stepsbyday <- aggregate(steps~date,data=dataset, sum)
 
 2. Histogram of the total number of steps taken per day
 
-```{r echo=TRUE}
+```{r echo=TRUE, eval=TRUE}
 hist(stepsbyday$steps,col="skyblue1", main="Histogram of Total Steps per Day (NAs Excluded)", xlab="Steps per Day", breaks=seq(from=0,to=25000,by=1000))
 ```
 
@@ -68,7 +68,7 @@ The median of the total number of steps taken per day: **`r median_steps`**.
 
 1. Time series graph of the 5-minute interval on the x-axis and the average number of steps taken, averaged across all days on the y-axis.
 
-```{r echo=TRUE}
+```{r echo=TRUE, eval=TRUE}
 # Steps by interval
 interval_steps <- aggregate(steps~interval,data=dataset, mean)
 
@@ -107,6 +107,7 @@ mean_imputed_steps
 median_imputed_steps <- format(median(imputed_totals$steps, na.rm=TRUE),scientific = FALSE)
 median_imputed_steps
 
+eval=TRUE
 hist(imputed_totals$steps,col="plum", main="Histogram of Total Steps per Day with Imputed Missing Values", xlab="Steps per Day", breaks=seq(from=0,to=25000,by=1000))
 ```
 The mean of total number of steps taken per day with imputed values is **`r mean_imputed_steps`**.  
@@ -130,7 +131,7 @@ meandayactivity <- aggregate(steps~interval+daytype,day_activity,mean)
 
 2. Create a time series graph of the 5-minute interval (x-axis) and the average number of steps taken and averaged across all weekday days or weekend days (y-axis.)
 
-```{r echo=TRUE}
+```{r echo=TRUE,eval=TRUE}
 library("lattice")
 # 2 panel time series plot of activity on weekdays vs weekends
 xyplot(meandayactivity$steps~meandayactivity$interval | meandayactivity$daytype,layout=c(1,2),type="l",xlab="Activity Interval", ylab="Average Number of Steps", main="Time Series Average Steps by 5-Minute Intervals")
